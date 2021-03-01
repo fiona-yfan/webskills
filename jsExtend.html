@@ -1,0 +1,117 @@
+<html>
+
+<head>
+    <title>javascript 继承</title>
+    <script type="text/javascript">
+        function ClassA(sColor) {
+            this.color = sColor;
+            this.sayColor = function () {
+                document.writeln(this.color);
+            };
+            this.child = [1, 2, 3]
+        }
+        //对象冒充
+        function ClassB(sColor, sName) {
+
+            this.newMethod = ClassA;
+            this.newMethod(sColor);
+            delete this.newMethod;
+
+
+            this.name = sName;
+            this.sayName = function () {
+                document.writeln(this.name);
+            };
+        }
+
+        var objA = new ClassA("blue");
+        var objB = new ClassB("red", "John");
+        objA.sayColor();
+        objB.sayColor();
+        objB.sayName();
+        //call or apply
+        function ClassC(sColor, sName) {
+            ClassA.call(this, sColor);
+            this.name = sName;
+            this.sayName = function () {
+                document.writeln(this.name);
+            };
+        }
+        var objC = new ClassC("purple", "Jena");
+        objA.sayColor();
+        objC.sayColor();
+        objC.sayName();
+
+        //原型链
+        ClassD.prototype = new ClassA("base");
+        function ClassD(sName) {
+            this.name = sName;
+            this.sayName = function () {
+                document.writeln(this.name);
+            }
+        }
+        var classD = new ClassD("Amy-1");
+        var classD1 = new ClassD("Amy-2");
+        classD.sayColor();
+        classD.color = "yellow-1";// 在对象classD上新加属性，不改变原型链上的
+        classD.sayColor();
+        classD.sayName();
+        classD.child.push(4);
+        classD1.sayColor();
+        classD1.color = "yellow-2";// 在对象classD上新加属性，不改变原型链上的
+        classD1.sayColor();
+        classD1.sayName();
+        classD.__proto__.color = "changed";
+        if (classD1.__proto__.color == "changed") {
+            document.writeln("所有通过原型链继承ClassA的对象的原型属性name都被修改为：");
+            classD1.sayColor();
+        }
+
+        class Person {
+            //调用类的构造方法
+            constructor(name, age) {
+                this.name = name
+                this.age = age
+            }
+            //定义一般的方法
+            showName() {
+                console.log("调用父类的方法")
+                console.log(this.name, this.age);
+            }
+        }
+        let p1 = new  Person('kobe', 39)
+        console.log(p1)
+        //定义一个子类
+        class Student extends Person {
+            constructor(name, age, salary) {
+                super(name, age)//通过super调用父类的构造方法
+                this.salary = salary
+            }
+            showName() {//在子类自身定义方法
+                console.log("调用子类的方法")
+                console.log(this.name, this.age, this.salary);
+            }
+        }
+        let s1 = new Student('wade', 38, 1000000000)
+        console.log(s1)
+        s1.showName();
+        p1.showName();
+    </script>
+</head>
+
+<body>
+    <h1>javascript继承方式</h1>
+    <h3>对象冒充，可以多继承。对象冒充的主要问题是必须使用构造函数方式</h3>
+    <h3>apply() 和 call()方法</h3>
+    <h3>原型链继承。使用原型链，就无法使用带参数的构造函数</h3>
+    <h3>混合方式 原型链继承方法 + call构造器继承属性</h3>
+    <pre>Student.prototype = new Person()</pre>
+    <h3>混和方式优化一</h3>
+    <pre>Student.prototype = Person.prototype</pre>
+    <h3>混合方式优化二</h3>
+    <pre>Student.prototype = Object.create(Person.prototype)//核心代码
+        Student.prototype.constructor = Student//核心代码</pre>
+    <h3>ES6 class 语法糖</h3>
+</body>
+
+</html>

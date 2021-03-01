@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>base page</title>
+    <script type="text/javascript">
+
+        function show_window() {
+            myWindow = window.open('', '', 'width=200,height=100')
+            myWindow.document.write("This is 'myWindow'")
+            //myWindow.focus()
+            //myWindow.blur()
+        }
+        function show_popup() {
+            var p = window.createPopup();
+            var pbody = p.document.body;
+            pbody.style.backgroundColor = "red";
+            pbody.style.border = "solid black 1px";
+            pbody.innerHTML = "这是一个 pop-up！在 pop-up 外面点击，即可关闭它！";
+            p.show(150, 150, 200, 50, document.body)
+        }
+        function resizeWindow() {
+            window.resizeBy(-100, -100);
+            //top.resizeBy(-100,-100)
+        }
+
+        function getWindowProperties() {
+
+            var info = `<b>location 属性:</b><br/>
+                                                           host name: ${window.location.hostname}<br/>
+                                                           href: ${window.location.href}<br/>
+                                                           host address: ${window.location.host}<br/>
+                                                           port: ${window.location.port}<br/>
+                                                           protocol: ${window.location.protocol}<br/>
+<b>screen属性:</b><br/>
+                                                           availHeight: ${window.screen.availHeight}<br/>
+                                                           availWidth: ${window.screen.availWidth}<br/>
+                                                           colorDepth: ${window.screen.colorDepth}<br/>
+<b>navigator属性：</b><br/>
+                                                           navigator.appCodeName: ${window.navigator.appCodeName}<br/>
+                                                           navigator.appName: ${window.navigator.appName}<br/>
+                                                           navigator.appVersion: ${window.navigator.appVersion}<br/>
+                                                           navigator.platform: ${window.navigator.platform}<br/>
+                                                           userAgent: ${window.navigator.userAgent}<br/>
+                                                           cookieEnabled: ${window.navigator.cookieEnabled}
+                                                               `;
+            return info;
+            //  document.getElementById("txt").value = info;// error null
+            // document.write(info);
+        }
+        function testOpen() {
+            // chrome 不支持很多特征值
+            window.open("http://www.baidu.com", "_blank", "left=20,top=100,width=500,height=600,location=no,toolbar=no,status=no,resizable=no");
+
+            window.clearInterval(timer);
+
+        }
+        function showTime() {
+            var dt = new Date();
+            document.getElementById("timediv").innerHTML = dt.toLocaleTimeString();
+        }
+        function showWindowProperties() {
+            document.getElementById("wdiv").innerHTML = getWindowProperties();
+        }
+
+        var timer = window.setInterval(showTime, 1000);
+
+        function create() {
+            let city = document.getElementById("city");
+            let ele = document.createElement("li");
+            ele.innerHTML = "武汉";
+            city.insertBefore(ele, city.firstChild);
+
+            let ele1 = document.createElement("li");
+            ele1.innerHTML = "南京";
+            city.appendChild(ele1)
+
+            city.innerHTML = city.innerHTML + "<li>HK</li>";
+        }
+        function replace() {
+            let city = document.getElementById("city");
+            let ele = document.createElement("li");
+            ele.innerHTML = "海南";
+            city.replaceChild(ele, city.lastChild.previousElementSibling);
+        }
+        function clone() {
+            let deepcopy = document.getElementById("deepCopy").checked;
+            let city = document.getElementById("city");
+            let ele = city.firstChild.nextElementSibling.cloneNode(deepcopy);
+            city.appendChild(ele);
+        }
+        function del() {
+            let city = document.getElementById("city");
+            city.removeChild(city.lastChild);
+        }
+
+        function handler(oEvent) {
+            if (window.event) oEvent = window.event; // for ie only
+            let oTarget;
+            if (oEvent.srcElement) {
+                oTarget = oEvent.srcElement;
+            }
+            else {
+                oTarget = oEvent.target;
+            }
+
+            let ediv = document.getElementById('ediv');
+            ediv.innerHTML = ediv.innerHTML + '<br/>' + oTarget +'.' + oEvent.type + ',screenX:' + oEvent.screenX + ',screenY:' + oEvent.screenY;
+
+        }
+        window.onload = function () {
+            let txt = document.getElementById('txt');
+            //键盘事件 onkeyup onkeydown onkeypress
+            txt.onkeyup = handler;
+            txt.onkeydown = handler;
+            txt.onkeypress = handler;
+            //鼠标事件 onclick, ondbclick, onmouseup, onmousedown, onmouseout, onmousemove, onmouseover
+            let img = document.getElementById('img');
+            img.onclick = handler;
+            img.ondblclick = handler;
+            img.onmousedown = handler;
+            img.onmouseup = handler;
+            img.onmousemove = handler;
+            img.onmouseout = handler;
+            img.onmouseleave = handler;
+            img.onmouseover = handler;
+            img.onmouseenter = handler;
+        }
+
+    </script>
+</head>
+<body>
+    The <abbr title="People's Republic of China">PRC</abbr> was founded in 1949.
+    <button onclick="show_window()">显示 window！</button>
+    <button onclick="show_popup()">显示 pop-up！</button>
+
+    <input type="button" onclick="resizeWindow()" value="调整窗口大小">
+    <br />
+    <input type="button" onclick="testOpen()" value="testOpen">
+    <input type="button" onclick="showWindowProperties()" value="window Properties">
+    <div id="timediv"></div>
+    <div id="wdiv"></div>
+
+    <div>
+        <p>document 节点的创建复制删除</p>
+        <ul id="city">
+            <li>上海</li>
+            <li>北京</li>
+        </ul>
+        <input type="button" id="create" value="create" onclick="create()" />
+        <input type="button" id="clone" value="clone" onclick="clone()" /> <input type="checkbox" id="deepCopy" />
+        <input type="button" id="del" value="delete" onclick="del()" />
+        <input type="button" id="replace" value="replace" onclick="replace()" />
+    </div>
+    <br/>
+    <div>
+        <b>event的鼠标事件和键盘事件</b><br/>
+        <textarea id="txt" rows="5" cols="80"></textarea>
+        <img src="D:\workspace\截图\TCPIP.png" style="width:100px;height:100px" alt="TCP\IP" id="img" />
+        <div id="ediv" style="font:small 10px arial, verdana"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,341 @@
+﻿
+/*
+    @规则
+    @charset
+    @import 模块化导入不同的样式
+    @media 媒体查询 查移动端的尺寸和是什么端
+    @font-face 自定义字体，自定义图标（文字图标），www.iconfont.cn
+
+    inline 行级元素没有办法添加backgroud，需要改成block 或inline-block 去设置背景颜色
+
+    */
+@import 'reset.css';
+@font-face {
+    font-family: 'iconfont';
+    src: url('font/iconfont.eot');
+    src: url('font/iconfont.eot?#iefix') format('embedded-opentype'),
+        url('font/iconfont.woff2') format('woff2'),
+        url('font/iconfont.woff') format('woff'),
+        url('font/iconfont.ttf') format('truetype'),
+        url('font/iconfont.svg#iconfont') format('svg');
+    }
+    .iconfont {
+        font-family: "iconfont" !important;
+        font-size: 16px;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .off{
+          visibility:hidden;
+          
+      }
+      .on{
+          visibility: visible;
+      }
+.logo-bg {
+    /*第一种因为网速过慢未加载css及js不影响网页展示的方式*/
+    display: block; /*行级标签变成块级标签*/
+    text-decoration: none;
+    height: 0px;
+    width: 150px;
+    padding-top: 60px;
+    background: url(../images/taobao.png) no-repeat;
+    background-size: 150px 60px; /* 与容器一样尺寸，实现平铺*/
+    overflow: hidden; /*隐藏不能被显示的文字*/
+}
+
+.logo-bg-bk {
+    /*另外一种因为网速过慢未加载css及js不影响网页展示的方式*/
+    display: block; /*行级标签变成块级标签*/
+    text-decoration: none;
+    width: 150px;
+    height: 60px;
+    background: url(../images/taobao.png) 0 0 no-repeat;
+    background-size: 150px 60px; /* 与容器一样尺寸，实现平铺*/
+    text-indent: -9150px;
+    white-space: nowrap;
+    overflow: hidden; /*隐藏不能被显示的文字*/
+}
+
+.wrapper {
+    height: 40px;
+    background-color: #f4f4f4;
+    line-height: 40px;
+}
+
+.content {
+    background-color: transparent;
+    margin: 0 auto;
+    width: 1100px;
+    height: 40px;
+}
+
+.inline {
+    vertical-align: 1px; /* 文本默认都是低对齐，可以通过该属性设置低对齐的位置如果middle垂直中间对齐*/
+}
+
+
+.top-left li {
+    float: left;
+    margin: 0 10px;
+}
+
+.top-right li {
+    float: right;
+    margin: 0 10px;
+}
+
+ul a {
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(78, 78, 75, 0.95);
+}
+
+    ul a:hover {
+        color: #f85508;
+    }
+
+.select-item {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(78, 78, 75, 0.95);
+    border: none;
+}
+
+
+    .select-item option {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(78, 78, 75, 0.95);
+        line-height: 16px;
+        padding: 5px 8px;
+    }
+        .select-item option:hover{
+            background-color:#b4b1b1;
+        }
+
+        .login-link {
+            color: #f85508;
+        }
+#headAd li {
+    float: left;
+    width: 209px;
+    height: 75px;
+    margin-right: 10px;
+    padding: 12px 15px 0 15px;
+    box-sizing: border-box;
+    /*
+                盒模型：
+                1.标准和模型
+                   总宽度=boarder左右+width+padding左右
+                   总高度=boarder上下+height+padding上下
+                2.IE盒模型 怪异盒模型 border-box
+                  总宽度=width
+                   总高度= height
+            */
+}
+
+#nav ul{
+    /* 首屏导航栏 右边的一块有两种设置方式,第一种不设置float*/
+    margin-left: 190px;
+    height: 30px;
+    /*
+    直接设置宽度
+    float: left;
+    width:1000px;
+    width:calc(100% - 190px);
+    background-image: linear-gradient(135deg, #ffe5e5, #ff00ff);
+    135deg 斜角
+    *//*ie9+*/
+    background-image: linear-gradient(to right, #ffe5e5, #ff00ff);
+    filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#4d000000', GradientType=0);
+}
+#nav ul li{
+    float: left;
+    line-height: 30px;
+    margin:  0 7px;
+    font-size: 14px;
+    color: #fff;
+    position: relative;
+}
+#nav ul li a{
+  color: #fff;
+  font-weight: bold;
+}
+
+#nav ul li.line{
+    margin: 0;
+}
+#nav ul li:hover::before{
+  /*content: '';
+  position: absolute;
+  width: 23px;
+  height: 13px;
+  background-image: url(../images/cat-animation.jpg)  no-repeat;
+  top:-13px;
+  left: 50%;
+  margin-left: -12px;*/
+
+  content:'&#xe61b;';
+  font-family:iconfont;
+  color:#ff5000;
+  top:-19px;
+  position:absolute;
+  left:50%;
+  font-size:12px;
+  margin-left:-15px;
+}
+
+#md .pic button{
+    width: 20px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.3);
+
+    position: absolute;
+    top: 50%;
+    margin-top: -15px;
+    display: none;/*隐藏照片左右的按钮*/
+}
+#md .pic button .leftBun{
+    float: left;
+    border-radius: 0 15px 15px 0;
+}
+#md .pic button .rightBun{
+    float: right;
+    border-radius: 15px 0 0 15px;
+}
+#md .pic:hover button{
+    /* 把照片上的左右按钮显示出来*/
+    display: inline-block;
+}
+
+#md .pic .circle{
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    margin-left: -35px; /*与left 50% 一起使用绝对居中*/
+    border-radius: 10px;
+    padding: 3px 0;
+    font-size: 0;/*去掉默认字体的大小，从而去掉默认占位高度*/
+    
+
+    background-color: rgba(255 ,255, 255, 0.3);
+}
+
+#md .picup .circle span{
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin: 0 3px;
+    cursor: pointer;
+}
+.news hd h3{
+    /*以图换字*/
+    width: 129px;
+    height: 26px;
+    background: url(images/xx.png) no-repeat;
+    text-indent: -9999px;
+    overflow: hidden;
+}
+.news .more{
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #999;
+}
+
+.right .user .avatar{
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto; /*横向居中*/
+    border-radius: 50%;
+    overflow: hidden; 
+    /*图像的父容器变成圆形，图像是正方形，overflow：hidden;
+    隐藏被父容器遮挡的部分，最后图像显示未圆形*/
+    
+}
+.right .user .avatar img{
+    width: 50px;
+    height: 50px;  
+}
+.right .user .username{
+    text-align: center;
+    line-height: 16px;
+}
+.right .user .member{
+    text-align: center;
+    font-size: 0;
+}
+.right .user .member a{
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 10px;
+    background-color: #ffe4dc;
+    margin: 0 2px;
+    padding:  0 10px 0 20px;
+
+}
+.right .user .member a.gold{
+
+    background: #ffe4dc url(images/sprite.png) 0 -527px no-repeat;
+    /*xuebi图 图精灵 0 -527px 是backgroud-position*/
+}
+.right .tip-off i{
+    vertical-align:1px ;
+    position: relative;
+    left: 30px; /*相对于原来的位置左边距30px*/
+}
+
+/* ul li 居中*/
+.notice ul{
+    text-align: center;
+    padding-top: 10px;
+    font-size: 0;
+}
+.notice ul li{
+    display: block;
+    padding: 0 4px;
+    margin: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+}
+.notice ul li .active{
+    font-weight: bold;
+    border-bottom:2px solid #f40;
+}
+
+.notice ul li a{
+    line-height: 30px;
+}
+
+.table{
+    table-layout: fixed;/*定义列宽的算法，均分*/
+
+}
+.appIcon{
+    text-align: center;
+    font-size: 0;
+}
+.appIcon li{
+    display: inline-block;/*换成块标签，自动平铺*/
+    margin: 0 10px 8px 10px;
+    width: 32px;
+    height: 32px;
+}
+.appIcon li img{
+    width: 32px;
+    height: 32px;
+}
+.break-line{
+    word-break: keep-all;/*按空格换行*/
+    word-wrap:break-word;
+}

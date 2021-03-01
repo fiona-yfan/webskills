@@ -1,0 +1,67 @@
+﻿/*remove default sytle for tag*/
+body,p,span,h1,h2,h3{
+    margin:0;
+}
+ul,ol{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+img{
+    border:none;
+    vertical-align:middle;
+}
+a{
+    text-decoration:none;
+    color:#3c3c3c;
+}
+i{
+    font-style:normal;
+}
+input,button{
+    margin:0;
+    padding:0;
+}
+button{
+    outline:none;/*选中边框*/
+}
+body {
+    font: 12px/1.5 arial,sans-serif,'\5b8b\4f53'’,'tahoma','Hiragino sans GB';
+    color:#3c3c3c;
+    background-color:#f4f4f4;
+    /*'\5b8b\4f53' unicode 宋体 SimSun
+        font-size 
+        line-weight: auto|1.5|150%|18px|1.5em
+      line-weight = font-size 12px *1.5
+        推荐直接使用1.5，会直接使用标签自己设置的font-size*父类body设置的lineweight
+        如果使用150% 1.5em,则直接继承body设置的font-size *行高，会出现问题。
+        除非在当前标签同时设置行高。
+    */
+}
+.clearfix:after{
+    content:'';
+    display:block;
+    clear:both;
+}
+.fl{
+    float:left;
+}
+.fr{
+    float:right;
+}
+.layer{
+    width:1190px;
+    margin:0 auto;
+}
+.c4{
+    color:#f40;
+}
+.c5{
+    color:#f50;
+}
+.mt10{
+    margin-top:10px;
+}
+.mr10{
+    margin-right:10px;
+}

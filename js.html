@@ -1,0 +1,773 @@
+<html>
+
+<head>
+    <title>javascript 知识点</title>
+    <script type="text/javascript">
+        // 闭包 做用：1 累加器
+
+        function add() {
+            var count = 0;
+            function increment() {
+                return count++;
+            }
+            return increment;
+        }
+        var mycounter = add();
+        console.log(mycounter());
+        console.log(mycounter());
+
+        // 作用2：缓存（存储结构）
+        function test() {
+
+            var num = 100;
+            function add() {
+                num++;
+                console.log(num);
+            }
+            function sub() {
+                num--;
+                console.log(num);
+            }
+            return [add, sub];
+        }
+        var myArr = test();
+        myArr[0]();
+        myArr[1]();
+
+        //共享变量 food 缓存了food
+        function eater() {
+            var food = "";
+            var obj = {
+                eat: function () {
+                    console.log("i am eating " + food);
+                },
+                push: function (myfood) {
+                    food = myfood;
+                }
+            }
+            return obj;
+        }
+        var aaa = eater();
+        aaa.push("apple");
+        aaa.eat();
+
+        // 闭包作用3 封装，变量私有化
+        function Fruit(name, color, shape) {
+            var index = 0;// 私有化变量，外部不能访问
+            this.name = name;
+            this.color = color;
+            this.shape = shape;
+            this.taste = function () {
+                index++;
+                console.log(index);
+            }
+        }
+        var fruit = new Fruit();
+        // 当new 是构造器中会隐式的 生成如下代码
+        // var this = {
+        //     name=name,
+        //     color=color,
+        //     shape=shape,
+        //     taste= function () { }
+        //     __proto__= Object.create(Fruit.prototype);
+        // }
+        //return this;
+            // 闭包作用4 函数模块化
+
+            ///**************
+            // 立即执行函数
+            // (function(){}()) 立即执行函数的格式
+            // 代码精简化
+            // without agrument
+            (function () {
+                var test = 123;
+                console.log(123);
+            }());
+        // with agrument
+        var num = (function (a, b, c) {
+            return a * b + c;
+        }(2, 5, 7));
+        console.log(num);
+
+        ///***********8888
+        ///只有表达式才能被执行符号执行 （）
+        ///当表达式被立即执行，名字被省略
+        var test = function () { }();
+        ///test undefined
+        (function test1() { console.log("instanst exceuted") }());// recommandation by w3c
+        (function test2() { console.log("instanst exceuted") })();
+        ///***********
+        /// 一个有意思的例子，可以使用立即执行函数 +闭包解决
+        function loopArray() {
+            let arr = [];
+            for (var i = 0; i < 10; i++) {
+                arr[i] = function () {
+                    document.write(i + " ");
+                }
+            }
+            return arr;
+        }
+        function loopArray2() {
+            let arr = [];
+            for (var i = 0; i < 10; i++) {
+                (function (j) {
+                    arr[j] = function () {
+                        document.write(j + " ");
+                    }
+                }(i));
+            }
+            return arr;
+        }
+        function loopArray3() {
+            let arr = [];
+            // using let
+            for (let i = 0; i < 10; i++) {
+                arr[i] = function () {
+                    document.write(i + " ");
+                }
+            }
+            return arr;
+        }
+        var arr1 = loopArray();
+        var arr2 = loopArray2();
+        var arr3 = loopArray3();
+        for (let j = 0; j < 10; j++) {
+            arr1[j]();//10 10 10 10 10 10 10 10 10 10
+        }
+        for (let j = 0; j < 10; j++) {
+            arr2[j]();//0 1 2 3 4 5 6 7 8 9
+        }
+        for (let j = 0; j < 10; j++) {
+            arr3[j]();//0 1 2 3 4 5 6 7 8 9
+        }
+
+
+
+        ///该方法不会报错，会把 （1，2，3，4）换行，test 依然是函数定义
+        function compute(a, b, c, d) {
+            console.log(a + b + c + d);
+        } (1, 2, 3, 4)
+
+
+        // count string length
+        function getStringLength(sentance) {
+            var count, len;
+            count = len = sentance.length;
+            for (let index = 0; index < len; index++) {
+                if (sentance.charCodeAt(index) > 255) {
+                    count++;
+                }
+
+            }
+            return count;
+        }
+
+        // comma 逗号运符
+        // 按顺序计算运行，仅返回最后一个计算结果
+        let a = (2 - 1, 2 + 1);// a=3;
+        let f = (function f() {
+            return "1";
+        },
+            function g() {
+                return 2;
+            })();
+        console.log(typeof f);// number
+
+        var x = 1;
+        if (function f() { }) {// 括号里面是表达式，不是函数声明
+            x += typeof f;// 任何undefined的对象使用都会报错，除非用typeof， typeof 返回的是string类型
+        }
+        console.log(x);// 1undefined
+
+        // 4 使用闭包进行模块开发，该方法同时使用的立即执行函数 和闭包
+        var initCallSome = (function () {
+            var name = "abc";
+            function some() {
+                console.log(name);
+            }
+            return function () {
+                some();
+            }
+        }());
+        // excute initCallSome
+        initCallSome();
+
+    </script>
+    <script type="text/javascript">
+        // 原型
+        var obj1 = { name: "a" };
+        var obj2 = obj1;
+        //obj1 指向新的地址空间但是obj2还是指向的原来的地址空间
+        obj1 = { name: "b" };
+        console.log(obj1.name);//"b"
+        console.log(obj2.name);//"a"
+
+        Person.prototype.name = "sunny";
+        function Person() {
+
+        }
+        // 每当new Person的时候，构造器中会隐式的生成如下代码
+        /*
+        var this={
+            __proto__=Person.prototype,
+        }*/
+        var per1 = new Person();
+        Person.prototype = {
+            name: "jimmy",
+        };
+        console.log(`per1.name=${per1.name}`);//"sunny"
+        //要注意代码执行的顺序，如果new Person()在protoType重定义之后，则响应最新的protoType的值
+
+        // 原型链
+        // 绝大多数的对象的最终原型对象是Object.protoType，
+        //通过Object.create(null)就没有原型，主动添加也没有用
+        // define grandpa
+        Grandpa.prototype.family = "zhang";
+        function Grandpa() { }
+        var grandpa = new Grandpa();
+        // define father
+        Father.prototype = grandpa;
+        function Father() {
+            this.name = "John";
+            this.fortune = {
+                credit1: "visa"
+            };
+            this.num = 100;
+        }
+        var father = new Father();
+        //define son
+        Son.prototype = father;
+        function Son() {
+            this.hobbit = "sport";
+        }
+        var son = new Son()
+        console.log(`son.family=${son.family}`);
+
+        //如何修改protoType
+        console.log(`继承的son.fortune=${son.fortune}`);
+        son.fortune = { debit: 10000 };
+        console.log(`添加了自己的属性 son.fortune=${son.fortune}`);
+        delete son.fortune;
+        son.fortune.debit = 50000;//修改了引用对象
+        console.log(`添加属性到原型上 son.fortune=${son.fortune}`);
+        son.num++; // 该方法 son.num = son.num+1;读num是在原型链上修改，赋值时如果该对象没有属性则创建该对象的属性
+        console.log(`father.sum=${father.num} && son.num=${son.num}`);// father.num=100;son.num=101
+
+        Human.prototype = {
+            name: "earth",
+            count: 100,
+            sayHello: function () {
+                // this指向的是：调用方，谁调用就是谁
+                console.log(`hello from ${this.name}`);
+            }
+        }
+        function Human() {
+            this.name = "human";
+            this.increment = function () {
+                this.count++;
+            }
+        }
+        var human1 = new Human();
+        human1.sayHello();//"human"
+        human1.__proto__.sayHello();//"Earth"
+        human1.increment();
+        console.log(`human1.count=${human1.count} && Human.prototype.count=${Human.prototype.count}`);
+
+        var nullobj = Object.create(null);
+        console.log(nullobj.__proto__);// undefined
+        nullobj.toString = function () {
+            return "this is null object";
+        }
+        console.log(nullobj);
+        document.write(nullobj);//y隐式调用了toString()"this is null object"
+
+        nullobj.__proto__ = {
+            name: "null",
+            toString: function () {
+                return "null";
+            }
+        };
+        console.log(nullobj.name);// undefined,__proto__ 只是一个普通属性，和对象里面的原型链不一样
+    </script>
+    <script type="text/javascript">
+        // call
+        function CallObj(name, description) {
+            this.callName = name;
+            this.callDescription = description;
+        }
+        var c1 = CallObj("call1", "without new");
+        //如下代码会出错，因为没有使用new ，里面的未申明的属性会在全局申明，调用时 this=window
+        //console.log(`c1.callName = ${c1.callName} && c1.callDescription = ${c1.callDescription}`);
+        console.log(`c1.callName 不存在，window.callName = ${this.callName} `);
+        /* 这个代码不ok
+            var c2 = CallObj.call("call2","by call with out name");
+            console.log(`window.callDescription = ${this.callDescription} `);
+          */
+        var that = {};
+        CallObj.call(that, "call3", "by call with that");
+        // CallObj中的this就指向that，that= {callName: "call3", callDescription: "by call with that"}
+
+        // call/apply的使用
+
+        function Wheel(size, style) {
+            this.wheelSize = size;
+            this.style = style;
+        }
+        function Sit(sitColor, material) {
+            this.sitColor = sitColor;
+            this.material = material;
+        }
+        function Model(weight, height, len) {
+            this.weight = weight;
+            this.height = height;
+            this.len = len;
+        }
+        function Car(size, style, sitColor, material, weight, height, len) {
+            //使用call、apply简化书写
+            Wheel.call(this, size, style);
+            Sit.call(this, sitColor, material);
+            Model.apply(this, [weight, height, len]);
+        }
+        var car = new Car(16, "cycle", "grey", "fathur", 90, 220, 380);
+        console.log(car);
+
+        //this
+        console.log("about this");
+        var name = "win";
+        var aaa = {
+            name: "aaa",
+            say: function () {
+                console.log(this.name);
+            }
+        }
+
+        var fun = aaa.say;// 被提升到全局
+        fun();//win ,window调用
+        aaa.say();//aaa
+        var bbb = {
+            name: "bbb",
+            say: function (fun) {
+                fun(); // 执行的时候没有xx.fun() 没有指定谁调用执行，那么就是window
+            },
+            show: function () {
+                show();
+            },
+            show2: () => { show(); }
+
+        }
+        bbb.say(fun);//win
+        bbb.say(aaa.say);//win aaa.say没有执行只走了预编译的过程，this指向window
+        bbb.say = aaa.say;
+        bbb.say();//bbb
+
+        function show() {
+            console.log(this);
+        }
+        bbb.show();// this -->window
+        bbb.show2();
+
+        var foo = "foo";
+        function bar() {
+            var foo = "bar"
+            this.foo = "f001"
+            console.log(foo);// 没有指定是this调用，从函数体的ao开始找
+        }
+        bar();//bar
+        var bbar = new bar();//bar when new var this = {__proto__:Object.create(bar.prototype)};
+        console.log(bbar);
+        // argument.callee  ee自己
+        console.log("argument.callee and func.caller")
+        function testCallee() {
+            console.log(arguments.callee);//log the whole function testCallee
+            function internal() {
+                console.log(arguments.callee);// log the whole function internal()
+            }
+            return internal();
+        }
+        testCallee();
+        //function.caller
+        function testCaller() {
+            testcalled();
+        }
+        function testcalled() {
+            console.log(testcalled.caller);// testCaller()
+        }
+        testCaller();
+
+
+        // clone
+        var origin = {
+            name: "test",
+            color: "red",
+            number: 1,
+            cards: [1, 2],
+            child: {
+                name: "son",
+                age: 23,
+                sibling: null
+            }
+        }
+        function clone(origin, target) {
+            var target = target || {};
+            for (var prop in origin) {
+
+                target[prop] = origin[prop];
+            }
+            return target;
+        }
+
+        function deepclone(origin, target) {
+            var target = target || {};
+            for (var prop in origin) {
+                if (origin.hasOwnProperty(prop)) {
+                    if (typeof origin[prop] == "object" && origin[prop] != null) {
+                        // initial array before copy
+                        target[prop] = isArray(origin[prop]) ? [] : {};
+                        target[prop] = deepclone(origin[prop], target[prop]);
+                    }
+                    else {
+                        target[prop] = origin[prop];
+                    }
+                }
+            }
+            return target;
+        }
+        function isArray(obj) {
+            // method1
+            var tostring = Object.prototype.toString;
+            return tostring.call(obj) == "[object Array]";
+
+            // method2
+            // return obj instanceof Array;
+        }
+        // test deepclone
+        var tar = deepclone(origin);
+        console.log(tar);
+
+        console.log("类数组")
+        var objArray = {
+            "1": "a",
+            "2": "b",
+            "3": "c",
+            "length": 4,
+            "push": Array.prototype.push,
+            "splice": Array.prototype.splice
+        };
+        //  Array.prototype.push 源码
+        // Array.prototype.push = function (obj, val) {
+        //     obj[obj.length] = val;
+        //     obj.length++;
+        // }
+        objArray.push("d");
+        console.log(objArray);
+
+        var strGlobal = "Global"
+        function testEval() {
+            console.log("test eval this")
+            var strGlobal = "testEval";
+            console.log(strGlobal);
+            console.log(this.strGlobal);
+            eval("strGlobal='eval';console.log(strGlobal)");
+            console.log(this.strGlobal);
+        }
+        testEval();
+    </script>
+
+</head>
+
+<body>
+    <div>
+        <h3>javascript编程规范</h3>
+        <span>数字和对象都应该使用对象字面量来定义<code>var obj = {};</code> </span>
+        <h3>javascript 基础知识点</h3>
+        <ul>
+            <li>六个基本数据类型：<b>number,string,boolean,Object,undefined,null</b>
+                <pre> typeof(null) = "object";
+                typeof(undefined) = "undefined";
+                typeof NaN = "Number";
+               </pre>
+                <pre>//数字+字符串=字符串
+                function myIsNaN(val){
+                    var res = Number(val);
+                    //res =NaN or  number
+                    res +="";
+                    return (res=="NaN")?true:false;
+                }
+
+               </pre>
+            </li>
+            <li>undefined vs ReferenceError: abcproperty is not defined
+                <pre>
+  var abc;//只申明，不赋值就是undefined
+  console.log(cde);//从来没有申明过，就是ReferenceError
+            </pre>
+            </li>
+            <li>convert to string: <br />
+                <code>String(123);<br/>
+                  .toString();<br/>
+                  .toString(2-36);//转为指定进制的数的字符串</code>
+            </li>
+            <li>convert to Number<br />
+                <dd>var num = Number(string);</dd>
+                <dd>var num2 = parseInt(string);<br />
+                    var ff = parseFloat(string);</dd>
+                <dd>parseInt(str,2-36) 把str当成给定的进制转为10进制
+                    <code> parseInt("123",8).toString(2)// 8进制转2进制 </code>
+                </dd>
+
+                <p>Number("123abc") = NaN vs ParseInt("123abc") = 123<br />
+                    <code>Number(null) = Number("") = Number("  ") = 0;</code><br />
+                    <code>Number(undefined) = NaN  </code><br />
+                    <code>parseInt(null) = parseInt("") = parseInt("  ") = parseInt(undefined) = NaN</code>
+                </p>
+                <dd>isNaN("123")=false; isNaN("abc")=true <i>isNaN 里面会先调用Number()</i> </dd>
+            </li>
+            <li>Convert to Boolean<br />
+                <code>Boolean(Infinity) = true；<br/>
+              Boolean(0) = false；<br/>
+              Boolean(NaN) = false；//数字中除0 NaN其他都是true<br/>
+              Boolean(" ") = true；<br/>
+              Boolean("") = false；//字符串中除了空字符串""其他都是true<br/>
+              Boolean(null) = false；<br/>
+              Boolean(undefined) = false；//非空对象 是true<br/>
+        </code>
+            </li>
+            <li>Math.ceil(123.11) = 124; //向上取整
+                <br /> Math.floor(123.99) = 123// 向下取整
+            </li>
+            <li>Math.random()取0 - 1之间的随机数。<br />
+                <code>//如果要取0 100 的随机数 <br/>
+             var rd = Math.random().toFixed(2) * 100;//该方法有精度问题 0.14 * 100 = 14.000000000000002
+             <b>js只能处理小数点前后各16位的精确，可以使用科学计数法的除外</b>
+             var rd1 = Math.floor(Math.random()*100);// 这样处理就都会是整数
+            </code>
+            </li>
+            <li>Array 常见方法
+                <br />1.改变原数组
+                <br />push pop shift（从前pop数据） unshift(向前插入数据) sort reverse
+                <br />splice(n,len,ele1,ele2) 从第n位截取len长度的数组，并在切口处添加新元素ele,返回的是切出来的数组
+                <br /> sort(), sort(function(a,b){})
+                <br /> 2.不改变原来的数组，并返回新的数组concat 拼接，join 数组变string，slice(start,len)截取，start可以是负数
+                <br /><small><mark> 2.1 [1,2,3].join("-") = "1-2-3"; "1-2-3".split("-")=[1,2,3]</mark></small>
+                <pre>       var arr = [1,2,,,3];// length=5
+                    var arr2= new Array([1,2,,3,]);// length=5
+                    var arr3=new Array(10);// length=10 undefined*10
+                    Array.prototype.push = function(){
+                        for(var i=0; i&lt;arguments.length; i++){
+                            this[this.length]=arguments[i];
+                        }
+                        return this;
+                    }
+                    Array.prototype.unshift = function(){
+                          return argument.concat(this);
+                    }
+                    // 整数 比大小 冒泡排序
+                    arr.sort(function(a,b){
+                        // 结果影响排序 &gt;0 两个数换位；&lt=0 不动
+                        return a-b;// 升序
+                        return b-a;// 降序 
+                        return Math.random()-0.5;//随机乱序
+                    })
+
+                </pre>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h3>javascript预编译 创建AO（activate Object） & GO （Global Object) 变量提升</h3>
+        <p>当函数被定义，进行预编译时，函数体内部变量的提升</p>
+        <ol>
+            <li>添加形参和变量声明到AO，值为undefined。(var a不管赋值形况，只管声明)</li>
+            <li>实参传入，给形参赋值</li>
+            <li>找函数声明，赋值为函数体funcation test(){}, var b = function(){} 这不是函数声明叫函数表达式</li>
+            <li>全局的预编译过程没有第3步，生成的是GO</li>
+        </ol>
+    </div>
+    <div>
+        <h3>作用域链scope chain</h3>
+        <b>object.[[scope]]:</b>
+        <p>当函数执行时产生的作用域链，从上而下的查找对象。</p>
+        <pre>
+            function a(){
+               var glob=100;
+            }
+            </pre>
+        <ol>
+            <li>当函数a被定义时，作用域链中的第0位存的是所在环境的上下文 Global Object{this:window,
+                window:{object},document:{object},glob:100,a:function}</li>
+            <li>当函数a被执行时，函数执行上下位被放在第0位，全局上下文移到第一位。函数执行上下文存的时Activation Object{this:window, agrument:{}, a: 123, b:
+                {functioin}}</li>
+            <li>当b函数被定义时，b函数的作用域链保留的是a的运行时的作用域链。第0位是a函数的执行上下文AO，第1位是全局上下文。AO：{this:window,agrument:{},b:234}</li>
+            <li>当b函数执行时，生成b的执行上下文，插入到第0位。其他内容顺移。</li>
+            <li>当函数被执行完成，只销毁当前函数的执行上下文AO，回到被定义时的状态</li>
+        </ol>
+    </div>
+    <div>
+        <h3>包装类: 把 string number boolean 原始类型转为 对象 </h3>
+        <ul>
+            <li>通过包装类new String() ; new Number(); new Boolean()转为对象</li>
+            <li>方法和属性只能添加给对象即Object，不能给基础数据类型添加属性和方法，如果添加也不会报错，隐式的添加包装类，然后使用后会被立即删除</li>
+            <li> <code>var num = 1;// 原始值<br/>
+            num.len = 3;// 给对象num新加一个属性，虽然这样完全没有意义，但是不会报错，而且系统会给他生成包装类，并删除<br/>
+            // new Number(num).len=3;<br/>
+            // delete it<br/>
+            console.log(num.len)//也不会报错，添加包装类，没有len属性，返回undefined
+</code> </li>
+        </ul>
+    </div>
+    <div>
+        <h3> 立即执行函数</h3>
+        <ul>
+            <li>W3C标准写法<code>(function(){}())</code></li>
+            <li>带参数的写法
+                <code>(function (a,b){alert(a+b)}(1,2))</code>
+            </li>
+            <li>带方法名的函数加执行符号()的这种写法不会报错也不会执行，默认分成两块代码，在执行符号前加上；
+                <code>function test(){alert("not excuted!")}()</code>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h3>闭包</h3>
+        <p>内部函数被保存到外部，原有的作用链不能释放。容易造成内存泄漏。
+        </p>
+        <i>作用:</i>
+        <ul>
+            <li>累加器（实现自增器）</li>
+            <li>缓存 </li>
+            <li>私有化变量</li>
+            <li>模块化 </li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>原型链</h3>
+        <p>原型：是function对象的一个属性，定义了构造函数创造出的对象的公共祖先。通过该构造方法生成的对象，都可以继承该原型的属性和方法，原型也是一个对象。</p>
+        <i>根据原型的特点，我们可以把公共属性放入原型中，减少代码冗余。</i>
+        <ul>
+            <li>所有对象的最终原型对象是Object.protoType</li>
+            <li>原型链上的属性查找是从近到远</li>
+            <li>原型的增，删，改</li>
+            <li>原型链中的方法中使用了this.property this指向的是调用方，谁调用就指向谁</li>
+            <li>对象的 构造器 obj.constructor</li>
+            <li>绝大多数对象最终都会继承自Object.prototype，Object.create(<b>null</b>)就是例外，生成的对象没有原型，就算主动添加也没有效果</li>
+            <li>Object.create(原型）
+                <pre>var obj = Object.create(test.prototype);</pre>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h3>call/apply</h3>
+        <p>作用都是改变this指向，参数第一位是this应该指向的对象</p>
+        <p>区别：传参列表不同。call需要把实参按照形参的个数依次传递；apply需要传入的是argument 数组</p>
+        <pre>Object.prototype.toString.call([]);// "[object Array]"
+         Object.prototype.toString.call(123);// "[object Number]"
+         Object.prototype.toString.call(true);// "[object Boolean]"
+         Object.prototype.toString.call([]);// "[object Array]"
+        </pre>
+    </div>
+    <div>
+        <h3>this</h3>
+        <ol>
+            <li>在预编译过程中，this-->window</li>
+            <li>在全局作用域中，this-->window</li>
+            <li>call/apply可以改变函数运行时this指向,this指向传入的对象</li>
+            <li>谁调用指向谁,obj.func(); func()中的this指向obj. </li>
+            <li>使用 new bar(),隐式创建一个this对象代表的是对象本身，不是window或其他，查找属性还是遵照AO->GO逐层查找
+                <pre>
+        var foo = "foo";
+        function bar() {
+            var foo = "bar"//私有变量,外部不能访问
+            this.foo = "f001" //当new Bar（）,变成 bar的公共变量
+            console.log(foo);// 没有指定是this调用，从函数体的ao开始找
+        }
+        bar();//bar
+        var bbar = new bar();//bar 
+            // 当调用new bar()时,构造器隐式的创建this对象,并return this
+            var this = {
+                 __proto__ : Object.create(bar.prototype),
+                 foo : "foo1"
+              }; 
+              return this;
+        console.log(bbar); 
+            </pre>
+            </li>
+        </ol>
+    </div>
+    <div>
+        <h3>argument.callee vs function.caller</h3>
+    </div>
+    <div>
+        <h3>javascript炫酷写法</h3>
+        <ul>
+            <li>obj.method1().method2().method3(), 只需要每个method 都return this；</li>
+            <li>属性调用方式obj.name==obj["name"]，在对象内部this["property"]</li>
+            <li>遍历对象的属性 for in <br />
+                <code>for(var prop in obj){console.log(prop +" "+ typeof prop+ "="+ obj[prop]);}</code>
+            </li>
+            <li>obj.hasOwnProperty(prop)原型链上的属性返回false</li>
+            <li>in操作符 if(prop in obj) 自己的和父类的原型的都返回true </li>
+            <li>A instanseof B 意思：A对象的原型链上有没有B的原型（A对象是不是有B构造出来的）
+                <pre> var arr = []||{};
+             // check arr type
+             console.log(arr instanceof Array ? "Array":"Object");
+             // 或者使用原型链上的tostring 方法判断 [Object Array]
+             Object.prototype.toString.call(arr);
+                </pre>
+            </li>
+            <li>自定义clone();deepclone()</li>
+            <li>类数组 note：1属性为索引(数字属性) 2 必须要有length属性 3 加入push方法
+                <pre>
+                    var objArray={
+                        "0":"a",
+                        "1":"b",
+                        "2":"c",
+                        "length":3,
+                        "push": Array.prototype.push
+                    }
+                </pre>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h3>try{} catch(e){}finally{}</h3>
+        <p>Error.name,有六中error</p>
+        <ol>
+            <li>EvalError: eval()的使用与定义不一致</li>
+            <li>RangeError：数值越界</li>
+            <li>ReferenceError：非法或不能是被的引用数值</li>
+            <li>SyntaxError：语法解析错误</li>
+            <li>TypeError：操作数类型错误</li>
+            <li>URIError：URI处理函数使用不当</li>
+        </ol>
+    </div>
+    <div>
+        <h3>ES5</h3>
+        <p>ES6之前的版本是ES3基本版本+ES5升级版本,当3和5冲突时，如果要严格执行ES5的标准，可使用ES严格模式"use strict"。启动ES5的严格模式有两种，1 全局模式，将字符串"use
+            strict"加到所有脚本的第一行；2 局部模式：在字符串"use strict"加到方法体的第一行</p>
+        <ul>
+            <li>ES5.0不允许使用with
+                <pre>//ES5 严格模式的用法
+                    // with ES5.0不允许使用with
+                    var obj = {
+                        name:"not es5"
+                    };
+                    function testES5(){
+                        var name = "test";
+                        // with可以改变原型链,此代码使用的是obj.name
+                        with(obj){
+                            console.log(name);
+                        }
+                    }
+                </pre>
+            </li>
+            <li>ES5.0 严格模式下不支持arguments.callee </li>
+            <li>ES5.0 严格模式下变量 必须先申明后使用</li>
+            <li>ES5.0 严格模式下预编译下this不指向window</li>
+            <li>ES5.0 严格模式下拒绝重复的属性和参数名</li>
+        </ul>
+
+    </div>
+</body>
+
+</html>

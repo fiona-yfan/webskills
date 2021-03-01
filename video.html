@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Video</title>
+    <script type="text/javascript">
+        let video = document.querySelector("#video1");
+
+        function getFirstBufferRange() {
+
+            showinfo(`buffered属性返回TimeRanges对象，表示视频、音频缓冲范围。
+                         Start: ${video.buffered.start(0)} End: ${video.buffered.end(0)}`);
+        }
+        function getFirstPlayedRange() {
+
+            showinfo(`played属性返回TimeRanges对象单位（秒），表示视频、音频首段已播放的范围。
+                         Start: ${video.played.start(0)} End: ${video.played.end(0)}`);
+        }
+
+        function getVideoSrc() {
+            showinfo(`当前音频、视频的源UR*：${video.currentSrc}`);
+        }
+        function getVideoDuration() {
+            showinfo(`当前音频、视频的源的时长：${video.duration}`);
+        }
+
+        function getCurTime() {
+            showinfo(`获取或设置当前音频、视频的源的播放位置，返回值为事件（秒）：${video.currentTime}`);
+        }
+
+        function setCurTime() {
+            video.currentTime = 8;
+        }
+
+        function getPlaySpeed() {
+            showinfo(`当前音频、视频的播放速度，double类型，0.0无效，1.0正常速度：${video.defaultPlaybackRate}`);
+        }
+
+        function setPlaySpeed() {
+            let speed = parseFloat(getVal());
+            video.defaultPlaybackRate = speed;
+            video.load();
+        }
+
+        function enableLoop() {
+            video.loop = true;
+            video.load();
+        }
+        function disableLoop() {
+            video.loop = false;
+            video.load();
+        }
+        function checkLoop() {
+            showinfo(`当前音频、视频是否循环播放：${video.loop}`);
+        }
+        function enableMute() {
+            video.muted = true;
+        }
+        function disableMute() {
+            video.muted = false;
+        }
+        function checkMute() {
+            showinfo(`当前音频、视频是否静音：${video.muted}`);
+        }
+
+        function enablePause() {
+            video.paused = true;
+        }
+        function disablePause() {
+            video.paused = false;
+        }
+        function checkPause() {
+            showinfo(`当前音频、视频是否暂停播放：${video.paused}`);
+        }
+
+        function enablePreload() {
+            video.preload = "auto";
+        }
+        function disablePreload() {
+            video.proload = "none";
+        }
+        function checkProload() {
+            showinfo(`当前音频、视频是否在页面加载完成后自动加载音频视频：${video.preload}`);
+        }
+
+
+        function setVolume() {
+            let vol = parseFloat(getVal());
+            video.volume = vol;
+        }
+
+        function getVolume() {
+            showinfo(`当前音频、视频的声音大小,范围0.0-1.0：${video.volume}`);
+        }
+
+
+        function getNWState() {
+            showinfo(`当前音频、视频的源的当前网络状态networkState：${video.networkState}`);
+        }
+
+        function getReadyState() {
+            showinfo(`当前音频、视频的就绪状态：
+0-服务器端没有有效资源；
+1-媒体资源确认，已经和服务器建立链接，还没有开始下载；
+2-数据已经加载，但是比较少，没有办法播放；
+3-数据加载足够播放；
+4-数据加载足够，浏览器准备播放，并且数据足够浏览器流畅播；
+当前值：${video.readyState}`);
+        }
+        function getSeekableRange() {
+            showinfo(`seekable属性返回TimeRanges对象，表示视频、音频可寻址的范围-可拖动播放的位置。
+                         Start: ${video.seekable.start(0)} End: ${video.seekable.end(0)}`);
+        }
+
+        function showinfo(msg) {
+            let info = document.querySelector("#info");
+            info.innerHTML = msg;
+        }
+        function getVal() {
+            return document.querySelector("#someval").value;
+        }
+
+    </script>
+</head>
+<body>
+    <header>
+        <h2>HTML5 多媒体技术</h2>
+        <article>视频文件的编码和解码：编码器对原始音频和视频文件进行有损压缩，以减小大小。解码器是还原指定编码格式压缩后的音频文件。</article>
+    </header>
+    <div style="font:normal 6px arial,verdana; color:#0000ff;">
+        <b>常见audio音频格式编解码技术：</b>
+        <ol>
+            <li>AAC:高级音频编码。相对于MP3，AAC格式的音质更佳，文件更小，苹果等设备支持AAC格式。</li>
+            <li>MP3:一种音频压缩技术，全称动态影像专家压缩标准音频层面3，主要在美国和日本使用如微软，不包括欧盟国家。</li>
+            <li>Ogg Vorbis:Ogg是一种文件格式，开源并且免费。AAC和MP3收费。</li>
+        </ol>
+        <b>常见vide视频格式编解码技术：</b>
+        <ol>
+            <li>H.264: H.264是MPEG-4标准所定义的最新格式，同时也是技术含量最高、代表最新技术水平的视频编码格式之一，也称AVC，主流编码技术。</li>
+            <li>VP8: Google产品，是一个免费的可自由使用的技术，使用较少。</li>
+            <li>Ogg Theora: Ogg Theora是Xiph.Org的第一个公开发布的视频编解码器，在Ogg流媒体服务器中使用。</li>
+        </ol>
+    </div>
+    <section>
+        <audio controls="controls">
+            <source src="file.mp3" type="audio/mp3" />
+            <source src="file.ogg" type="audio/ogg" />
+            此浏览器不支持audio标签
+        </audio>
+        <br />
+        <video controls="controls" id="video1">
+            <source src="file.mp4" type="video/mp4" />
+            <source src="file.webm" type="video/webm" />
+            <source src="file.ogv" type="video/ogg" />
+            此浏览器不支持video标签
+        </video>
+    </section>
+    <section>
+        <div id="info" style="font:bold 10px arial,verdana; color:#ff0000"></div>
+        <label for="someval">设置值：</label><input type="text" id="someval" value="" />
+        <table>
+            <tr>
+                <td> <button onclick="getFirstBufferRange()">获取第一个缓冲范围</button>   </td>
+                <td> <button onclick="getVolume()">获取当前媒体url</button>   </td>
+                <td> <button onclick="getVideoDuration()">获取视频播放时长</button>   </td>
+                <td> <button onclick="getReadyState()">获取视频的就绪状态</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="getNWState()">获取视频的网络状态</button>   </td>
+                <td> <button onclick="getFirstPlayedRange()">视频的首段播放范围</button>   </td>
+                <td> <button onclick="getSeekableRange()">可以拖拽的寻址范围</button>   </td>
+                <td> <button onclick="checkPause()">视频是否暂停</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="getCurTime()">获取当前播放时间</button>   </td>
+                <td> <button onclick="setCurTime()">设置当前播放时间点</button>   </td>
+                <td> <button onclick="getPlaySpeed()">获取视频默认播放速度</button>   </td>
+                <td> <button onclick="setPlaySpeed()">设置视频默认播放速度</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="enablePreload()">设置预加载</button>   </td>
+                <td> <button onclick="disablePreload()">取消预加载</button>   </td>
+                <td> <button onclick="checkProload()">是否预加载</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="enableLoop()">设置循环</button>   </td>
+                <td> <button onclick="disableLoop()">取消循环</button>   </td>
+                <td> <button onclick="checkLoop()">是否循环</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="enableMute()">设置静音</button>   </td>
+                <td> <button onclick="disableMute()">取消静音</button>   </td>
+                <td> <button onclick="checkMute()">是否静音</button>   </td>
+            </tr>
+            <tr>
+                <td> <button onclick="setVolume()">设置音量</button>   </td>
+                <td> <button onclick="getVolume()">获取音量</button>   </td>
+            </tr>
+        </table>
+
+    </section>
+</body>
+</html>

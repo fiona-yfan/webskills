@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tower of Hanoi</title>
+    <script type="text/javascript">
+        var hanoi = function (disc, src, aux, dst) {
+
+            if (disc > 0) {
+                hanoi(disc - 1, src, dst, aux);
+                document.writeln('move disc ' + disc + 'from ' + src + ' to ' + dst);
+                //console.log('move disc ' + disc + 'from ' + src + ' to ' + dst);
+                hanoi(disc - 1, aux, src, dst);
+            }
+        }
+        hanoi(4, 'Src', 'Aux', 'Dst');
+
+
+
+        var fade = function (node) {
+            var level = 1;
+            var step = function () {
+                var hex = level.toString(16);
+                //console.log(this);
+                console.log(hex);
+                node.style.backgroundColor = '#FFFF' + hex + hex;
+                if (level < 15) {
+                    level++;
+                    setTimeout(step, 100);
+                }
+            }
+            setTimeout(step, 100);
+        }
+
+        fade(document.body);
+    </script>
+</head>
+
+<body>
+    <div class="test"></div>
+    <span>testspan</span>
+    <p><span></span></p>
+    <h1></h1>
+    <h2></h2>
+    <ur>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ur>
+</body>
+
+</html>

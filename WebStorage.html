@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Web Storage</title>
+    <style>
+        #msgTable tr td {
+            border: 1px solid black;
+        }
+
+        .original {
+            display: none;
+        }
+
+        .error {
+            display: block;
+            color: red;
+            background-color: yellow;
+            transition: all ease 5s;
+        }
+
+        .success {
+            display: block;
+            color: green;
+            background-color: yellow;
+            /* animation: 3s ease-in show-msg;
+            animation-direction: reverse;
+            animation-play-state:paused;
+            animation-fill-mode:both;*/
+            animation: 3s ease-in 1s 1 reverse both show-msg;
+        }
+        @keyframes show-msg {
+            from {
+                transform: scaleY(0);
+            }
+
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+    </style>
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function addInfo() {
+            let info = getInfo();
+            let localStorage = getWebStorage();
+            if (info != '') {
+                // check myBoarding existing
+                if (localStorage.myBoard) {
+
+                    // if key exsiting, set exiting info + new msg and set to myBoarding
+                    localStorage.myBoard += info;
+                }
+                else {
+                    localStorage.myBoard = info;
+                }
+            }
+            upInfo();
+        }
+        function upInfo() {
+            let show = document.querySelector("#show");
+            let localStorage = getWebStorage();
+            if (localStorage && localStorage.myBoard) {
+                show.value = localStorage.getItem("myBoard");
+            }
+            else {
+                show.value = "no message";
+            }
+            document.querySelector("#txtboard").value = '';
+        }
+        function getInfo() {
+            let txt = document.querySelector("#txtboard");
+            if (txt.value && txt.value.trim() != "") {
+                let dt = new Date().toLocaleTimeString();
+                return `${txt.value} \n send at ${dt} \n`;
+            }
+            return '';
+        }
+        function getWebStorage() {
+            return window.localStorage;
+            //return window.sessionStorage;
+        }
+        function clearInfo() {
+            getWebStorage().removeItem("myBoard");
+            getWebStorage().clear();
+            upInfo();
+        }
+
+        var operationDb = {
+            getCurrentDB: function () {
+                let db = openDatabase("mydata.db", "1.0", "demo html5 sql", 2014 * 1024);
+                return db;
+            },
+            dropCurrentDB: function () {
+
+            },
+            initDatabase: function () {
+                let db = this.getCurrentDB();
+                if (!db) {
+                    alert("the browser is not support local database!");
+                    return;
+                }
+                db.transaction(function (trans) {
+                    trans.executeSql("create table if not exists DemoMsg(name text null,subject text null, message text null)",
+                        [],
+                        function (trans, result) {
+
+                        }, function (trans, error) {
+                        }
+                    );
+                });
+            },
+            deleteTable: function (tablename) {
+                let db = this.getCurrentDB();
+                db.transaction(function (trans) {
+                    trans.executeSql("delete table where tablename = ?", [tablename],
+                        function (ts, success) { },
+                        function (ts, error) { });
+                });
+            }
+        };
+        function clearData() {
+            $("#msgTable").empty();// clean table
+            let db = operationDb.getCurrentDB();
+            db.transaction(function (trans) {
+                trans.executeSql("delete from DemoMsg", [],
+                    function (ts, success) {
+                        if (success) {
+                            showMsg(false); 
+                        }
+                    },
+                    function (ts, error) {
+                        if (error) {
+                            showMsg(true, error.message);
+                        }
+                    });
+            });
+        }
+
+        function showMsg(isError, msg) {
+            if (isError) {
+                $('#operatonMsg').html("delete failed!\n" + msg);
+                $('#operatonMsg').addClass("error");
+                /* this method for show info be better*/
+                window.setTimeout(function () {
+                    $('#operatonMsg').removeClass();
+                    $('#operatonMsg').addClass("original");
+                    //$('#operatonMsg').css("display", "none");
+                }, 5000);
+                //$('#operatonMsg').css("color","red");
+            }
+            else {
+                $('#operatonMsg').html("delete successfully!");
+                //$('#operatonMsg').removeClass();
+                // by animate, need some trigger to reset play-state
+                $('#operatonMsg').addClass("success");
+                //$('#operatonMsg').css("animation-play-state", "running");
+                //window.setTimeout(function () {
+                //    $('#operatonMsg').css("animation-play-state", "paused");
+                //}, 4000);
+            }
+        }
+        /* transition 出发方式有三种：
+         * 1.伪类触发:hover :active :focus 等
+         * 2.媒体查询触发 
+         * 把浏览器的宽度拖动到小于1000px时触发 
+         * @media(max - width: 1000px) {
+         * .test{ width: 500px;  }
+         *  }
+         * 3. js触发 
+         *  test.onclick = function(){
+            test.style.width = '300px';
+            setTimeout(function(){
+            test.style.width = '100px';
+             },3000);
+          }*/
+
+        function showAllData() {
+            $("#msgTable").empty();// clean table
+            let db = operationDb.getCurrentDB();
+            db.transaction(function (trans) {
+                trans.executeSql("select * from DemoMsg", [],
+                    function (ts, success) {
+                        if (success) {
+                            // loop each data in json
+                            for (let data of success.rows) {
+                                appendDataToTable(data)
+                            }
+                        }
+                    },
+                    function (ts, error) {
+
+                    });
+            });
+        }
+        function appendDataToTable(data) {
+            let row = `<tr><td>${data.name}</td><td>${data.subject}</td><td>${data.message}</td></tr>`;
+            $('#msgTable').append(row);
+        }
+        // =window.onload
+        $(function () {
+            operationDb.initDatabase();
+            $("#send").click(function () {
+                let name = $("#name").val();
+                let subject = $("#subject").val();
+                let message = $("#message").val();
+                let db = operationDb.getCurrentDB();
+                // execute sql to insert data
+                db.transaction(function (trans) {
+                    trans.executeSql("insert into DemoMsg(name,subject,message) values(?,?,?)",
+                        [name, subject, message],
+                        function (ts, success) { },
+                        function (ts, error) {
+                            alert(error);
+                        });
+
+                });
+                showAllMessage();
+            });
+        })
+    </script>
+</head>
+<body>
+    <h3>Web Storage API </h3>
+    <ul>
+        <content>
+            Web Storage有两种：
+            <b>window.localStorage</b> （不随这浏览器关闭而消失)和
+            <br />
+            <b>window.sessionStorage</b>（浏览器关闭就删除）.
+        </content>
+        <li>getItem(key) 获取指定key的存储值</li>
+        <li>setItem(key，value) 存储指定key的存储值</li>
+        <li>key(index) 返回索引对应的key值</li>
+        <li>removeItem(key) 删除指定key的值</li>
+        <li>clear() 清楚所有storage中的值</li>
+        <li>length 属性，返回key/value列表的长度</li>
+        <li>访问storage更简单直接的方法： sessionStorage.someKey='somevalue' var sval = sessionStorage.sameKey</li>
+    </ul>
+    <h3>简单的web存储留言板</h3>
+    <textarea id="txtboard"></textarea>
+    <br />
+    <input type="button" class="button" value="留言" onclick="addInfo()" />
+    <input type="button" class="button" value="清除留言" onclick="clearInfo()" />
+    <br />
+    <textarea id="show" readonly></textarea>
+
+    <h3>HTML5 对Web SQL的操作</h3>
+    <i>
+        html5 引入web sql database的概念，允许通过一个异步js访问SQLLite数据库。Web SQL不是html5
+        规范的组成部分，是单独的规范，目前Safari，Chrome，Opera浏览器都支持
+    </i>
+    <ul>
+        <content><b>HTML5 WebSQL API</b></content>
+        <li>openDatabase   允许使用现有数据库或新建数据库 </li>
+        <content><i>var db = openDatabase(name, version, displayName, estimatedSize, createCallback)</i></content>
+        <li>transaction  允许执行事务处理  </li>
+        <content><i>transaction(function(tx){...})</i></content>
+        <li>executeSql  用于执行SQL语句  </li>
+        <content>
+            <i>transaction.executeSql(sql,[],dataHandler,errorHandler).</i>
+            <br />
+            <small>
+                sql : 要执行的sql 语句。
+                [] : sql语句中占位符‘？’所对应的参数值。
+                dataHandler : 执行sql语句成功时回调函数。
+                errorHandler : 执行sql语句出错时调用的函数。
+            </small>
+        </content>
+    </ul>
+    <table>
+        <tr>
+            <td>userName</td>
+            <td><input type="text" id="name" value="" required /><span style="color:red;">*</span></td>
+        </tr>
+        <tr>
+            <td>subject</td>
+            <td><input type="text" id="subject" value="" required /><span style="color:red;">*</span></td>
+        </tr>
+        <tr>
+            <td>message</td>
+            <td><textarea type="text" id="message" value="" required rows="5" style="width:200px"></textarea><span style="color:red;">*</span></td>
+        </tr>
+        <tr><td><input type="button" id="send" value="send" /> </td></tr>
+    </table>
+    <div style="background-color:darkgray;width:100%;height:2px;"></div>
+    <input type="button" id="diaplay" value="dispaly all message" onclick="showAllData()" />
+    <input type="button" id="diaplay" value="dispaly all message" onclick="clearData()" />
+    <br />  <span id="operatonMsg" ></span><br />
+    <table id="msgTable" style="border:2px solid black;">
+    </table>
+</body>
+</html>

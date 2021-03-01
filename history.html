@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Demo for SPA</title>
+    <script type="text/javascript">
+        let index = 0;
+        function pushstate() {
+            history.pushState({ type: "push" }, "pushstate", `?test=${index++}`);
+        }
+        function replacestate() {
+            history.replaceState({ type: "replace" }, "replacestate", `?test=${index++}`);
+        }
+        function goback() {
+            history.back();
+        }
+        window.onpopstate = function (event) {
+
+            document.getElementsByName("content")[0].innerHTML = `location: ${document.location} ;+state: ${JSON.stringify(event.state)}`;
+        }
+    </script>
+</head>
+<body>
+    <div style="height:50px;width:100%;background-color:aquamarine;position:fixed;margin:1px 1px 1px 1px">header bar</div>
+    <div style="width:50px;height:200px;background-color:darkgray; float:left;margin-top :52px;">Left Bar</div>
+    <div style="float:right;padding-top:1px;margin-top:52px;">
+        <button onclick="pushstate()">pushstate</button>
+        <button onclick="replacestate()">replacestate</button>
+        <button onclick="goback()">history.back</button>
+        <div name="content" ></div>
+    </div>
+</body>
+</html>
