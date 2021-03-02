@@ -1,0 +1,80 @@
+<html>
+
+<head>
+    <title>ES6 new feature</title>
+    <script type="text/javascript">
+        let exam = {
+            name: "Tom",
+            age: 24,
+            get info() {
+                return `${this.name} ${this.age}`;
+            },
+            set info(value) {
+                return this.age = value;
+            }
+        };
+        console.log(`exam.age: ${Reflect.get(exam, "age")}`);
+        let rec = {
+            name: "jerry",
+            age: 19
+        };
+        // Reflect.get(target, name, receiver)
+        // 如果target对象中指定了getter，receiver则为getter调用时的this值。
+        console.log(`get exam.info(): ${Reflect.get(exam, "info", rec)}`);
+
+        //Reflect.set(target, name, value, receiver)
+        //receiver 如果遇到 setter，receiver则为setter调用时的this值。
+        Reflect.set(exam, "age", 30);
+        Reflect.set(exam, "age", 1, rec);
+        console.log(`exam.age ${exam.age}  rec.age ${rec.age}`);
+        //Reflect.has 用于检查一个对象是否拥有某个属性， 相当于in 操作符 
+        console.log(`exam has name ${Reflect.has(exam, "name")}`);
+
+        //Reflect.defineProperty(target, propertyKey, attributes)
+        //允许精确添加或修改对象上的属性
+        Reflect.defineProperty(exam, "score", { value: 90 });
+        console.log(`${exam.name} score = ${exam.score}`);
+
+        //Reflect.deleteProperty(target, propertyKey) 允许你删除一个对象上的属性。
+        //返回一个 Boolean 值表示该属性是否被成功删除。
+        //它几乎与非严格的 delete operator 相同。
+        Reflect.deleteProperty(exam, "score");
+        console.log(`after delete property ${exam.name} score = ${exam.score}`);
+
+
+    </script>
+
+</head>
+
+<body>
+    <h1>proxy</h1>
+    <p>要使用 Proxy 包装的目标对象（可以是任何类型的对象，包括原生数组，函数，甚至另一个代理）
+        handler 对象是一个容纳一批特定属性的占位符对象。它包含有 Proxy 的各个捕获器（trap）。
+        所有的捕捉器是可选的。如果没有定义某个捕捉器，那么就会保留源对象的默认行为。
+    </p>
+    <ol>
+        <li>对get set 拦截</li>
+        <li>apply拦截</li>
+        <li>defineProperty deleteProperty </li>
+        <li>has</li>
+        <li>construct</li>
+        <li>apply</li>
+    </ol>
+    <h1>Reflect</h1>
+    <p>ES6将Object的一些明显属于语言内部的方法一直到了Reflect对象上</p>
+    <ol>
+        <li>Reflect.get(target, name, receiver)</li>
+        <li>Reflect.set(target, name, value, receiver)</li>
+        <li>Reflect.has(obj, name)</li>
+        <li>Reflect.deleteProperty(obj, property)</li>
+        <li>Reflect.construct(obj, args)</li>
+        <li>Reflect.apply(func, thisArg, args)</li>
+        <li>Reflect.defineProperty(target, propertyKey, attributes)</li>
+        <li>Reflect.getOwnPropertyDescriptor(target, propertyKey)</li>
+        <li>Reflect.isExtensible(target)</li>
+        <li>Reflect.preventExtensions(target)</li>
+        <li>Reflect.ownKeys(target)</li>
+    </ol>
+</body>
+
+</html>
